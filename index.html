@@ -1,0 +1,598 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="Dinol Castelino - AI/ML Engineer building reliable real-world AI systems with engineering discipline and product thinking." />
+<title>Dinol Castelino | AI/ML Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Press+Start+2P&display=swap" rel="stylesheet" />
+<style>
+/* ─── TOKENS ─────────────────────────────────────────── */
+:root{
+  --black:#000;--white:#fff;
+  --yellow:#ffd600;--green:#00e676;--purple:#7c4dff;
+  --red:#ff3131;--cyan:#82f7ff;--pink:#ff8ac8;--blue:#246bff;
+  --border:3px solid var(--black);
+  --shadow:6px 6px 0 var(--black);
+  --yshadow:8px 8px 0 var(--yellow);
+  --pshadow:8px 8px 0 var(--purple);
+  --max:1580px;
+}
+*{box-sizing:border-box}
+html{color-scheme:dark;scroll-padding-top:88px;scroll-behavior:smooth}
+body{margin:0;background:var(--black);color:var(--white);font-family:"JetBrains Mono",Consolas,monospace;line-height:1.65;cursor:none;overflow-x:hidden}
+::selection{background:var(--yellow);color:var(--black)}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+.pixel{font-family:"Press Start 2P","JetBrains Mono",monospace;letter-spacing:-.035em;line-height:1.35;text-transform:uppercase}
+.shell{position:relative;isolation:isolate;overflow-x:hidden}
+
+/* ─── SCANLINE OVERLAY ───────────────────────────────── */
+.scanlines{position:fixed;inset:0;z-index:9990;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.06) 3px,rgba(0,0,0,.06) 4px);animation:scanMove 8s linear infinite}
+@keyframes scanMove{to{background-position:0 100px}}
+
+/* ─── DECO ───────────────────────────────────────────── */
+.deco{position:fixed;inset:0;z-index:-1;pointer-events:none}
+.deco span{position:absolute;font-family:"Press Start 2P",monospace;font-size:14px;opacity:.15;animation:decoPulse 3s ease-in-out infinite}
+.deco span:nth-child(1){left:5%;top:14%;color:var(--yellow);animation-delay:0s}
+.deco span:nth-child(2){left:90%;top:20%;color:var(--cyan);animation-delay:.8s}
+.deco span:nth-child(3){left:80%;top:48%;color:var(--green);animation-delay:1.6s}
+.deco span:nth-child(4){left:10%;top:72%;color:var(--pink);animation-delay:2.4s}
+@keyframes decoPulse{0%,100%{opacity:.1;transform:scale(1)}50%{opacity:.3;transform:scale(1.3)}}
+
+/* ─── NOISE TEXTURE on sections ─────────────────────── */
+.section::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");opacity:.5;z-index:1}
+.section{position:relative}
+.section .head,.section .body{position:relative;z-index:2}
+
+/* ─── TOPBAR ─────────────────────────────────────────── */
+.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:stretch;justify-content:space-between;min-height:76px;background:var(--black);border-bottom:4px solid var(--white);transition:transform .3s ease}
+.topbar.hidden{transform:translateY(-100%)}
+.brand{display:flex;align-items:center;gap:12px;padding:16px clamp(16px,4vw,32px);border-right:4px solid var(--white);color:var(--yellow);font-weight:900}
+.mark{display:grid;place-items:center;width:36px;height:36px;background:var(--yellow);border:var(--border);color:var(--black);box-shadow:4px 4px 0 var(--white);font-weight:900;transition:transform .15s ease,box-shadow .15s ease}
+.brand:hover .mark{transform:rotate(8deg) scale(1.1);box-shadow:6px 6px 0 var(--cyan)}
+.nav{display:flex;align-items:stretch;margin-left:auto}
+.nav a{display:grid;place-items:center;padding:0 18px;border-left:3px solid var(--white);font-size:12px;font-weight:900;text-transform:uppercase;position:relative;overflow:hidden;transition:color .2s}
+.nav a::before{content:"";position:absolute;inset:0;background:var(--yellow);transform:scaleX(0);transform-origin:left;transition:transform .25s cubic-bezier(.4,0,.2,1);z-index:-1}
+.nav a:hover::before,.nav a:focus-visible::before{transform:scaleX(1)}
+.nav a:hover,.nav a:focus-visible{color:var(--black);outline:none}
+.nav a:active,.btn:active,.social:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--black)}
+
+/* ─── PROGRESS BAR ───────────────────────────────────── */
+#progress{position:fixed;top:0;left:0;z-index:9999;height:3px;width:0%;background:linear-gradient(90deg,var(--yellow),var(--cyan),var(--pink));transition:width .1s linear;pointer-events:none}
+
+/* ─── MAIN ───────────────────────────────────────────── */
+main{width:min(100%,calc(var(--max) + 56px));margin:0 auto;padding:28px}
+.section{margin:0 0 38px;background:var(--white);color:var(--black);border:4px solid var(--black);outline:4px solid var(--white);box-shadow:var(--yshadow)}
+.purple{box-shadow:var(--pshadow)}.blue{box-shadow:8px 8px 0 var(--blue)}.red{box-shadow:8px 8px 0 var(--red)}
+.black{background:var(--black);color:var(--white);border-color:var(--white);outline:4px solid var(--black);box-shadow:8px 8px 0 var(--cyan)}
+
+/* section entrance */
+.section{transition:box-shadow .25s ease,outline-color .25s ease}
+.section:hover.section:not(.hero-section){outline-color:var(--yellow)}
+
+/* ─── HEAD ───────────────────────────────────────────── */
+.head{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:16px;padding:18px clamp(18px,4vw,36px);border-bottom:4px solid currentColor;background:var(--yellow);color:var(--black)}
+.num{display:grid;place-items:center;min-width:44px;min-height:32px;padding:4px 8px;border:var(--border);background:var(--black);color:var(--yellow);font-weight:900;transition:transform .2s ease}
+.head:hover .num{transform:rotate(-5deg) scale(1.1)}
+.title{margin:0;font-size:clamp(16px,2vw,26px)}
+.body{padding:clamp(24px,4vw,52px)}
+
+/* ─── HERO ───────────────────────────────────────────── */
+.hero{position:relative;display:grid;grid-template-columns:1fr;gap:34px;min-height:calc(100vh - 132px);padding:clamp(24px,4.8vw,62px);overflow:hidden}
+.hero-stage{position:relative;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(320px,.92fr);place-items:center;align-items:center;gap:clamp(28px,5vw,72px);min-height:auto;padding:clamp(28px,5vw,72px);overflow:hidden;background:var(--white)}
+.hero-bg,.shape,.pill,.play,.plus{display:none}
+.hero-stage::before,.hero-stage::after{content:"";position:absolute;z-index:1;border:var(--border);box-shadow:4px 4px 0 var(--black);pointer-events:none;animation:floaty 4.8s ease-in-out infinite}
+.hero-stage::before{width:clamp(92px,10vw,150px);height:clamp(92px,10vw,150px);right:clamp(20px,5vw,72px);top:clamp(18px,4vw,52px);background:var(--pink);transform:rotate(45deg)}
+.hero-stage::after{width:clamp(120px,14vw,220px);height:clamp(42px,5vw,72px);right:clamp(26px,7vw,120px);bottom:clamp(22px,5vw,72px);background:var(--green);transform:rotate(-5deg);animation-delay:1.2s}
+
+/* portrait */
+.portrait{position:relative;border:5px solid var(--black);background:var(--white);box-shadow:14px 14px 0 var(--purple);z-index:3;transition:box-shadow .3s ease,transform .3s ease}
+.portrait:hover{transform:translate(-4px,-4px);box-shadow:18px 18px 0 var(--purple)}
+.portrait img{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:52% 34%;transition:filter .4s ease}
+.portrait:hover img{filter:contrast(1.05) saturate(1.1)}
+.portrait figcaption{position:absolute;left:-5px;bottom:-5px;z-index:4;max-width:92%;padding:10px 12px;border:var(--border);background:var(--yellow);color:var(--black);font-size:12px;font-weight:900;text-transform:uppercase}
+.frame{position:absolute;inset:20px;z-index:3;border:3px solid var(--yellow);pointer-events:none;transition:inset .3s ease}
+.portrait:hover .frame{inset:14px;border-color:var(--cyan)}
+
+/* hero copy */
+.hero-copy{position:relative;left:auto;bottom:auto;z-index:4;width:100%;max-width:760px;justify-self:start}
+.hero-media{grid-column:2;grid-row:1;justify-self:center;width:min(100%,430px);min-width:0;animation:portraitIn .75s ease .1s both}
+
+.eyebrow{display:inline-block;margin:0 0 18px;padding:8px 10px;border:var(--border);background:var(--green);color:var(--black);box-shadow:5px 5px 0 var(--blue);font-size:12px;font-weight:900;text-transform:uppercase;transition:transform .2s ease,box-shadow .2s ease}
+.eyebrow:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--blue)}
+
+/* glitch effect on h1 */
+h1{margin:0 0 14px;font-size:clamp(30px,5vw,78px);position:relative}
+h1::before,h1::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;overflow:hidden}
+h1::before{color:var(--cyan);clip-path:polygon(0 0,100% 0,100% 45%,0 45%);animation:glitch1 4s step-end infinite}
+h1::after{color:var(--pink);clip-path:polygon(0 55%,100% 55%,100% 100%,0 100%);animation:glitch2 4s step-end infinite}
+@keyframes glitch1{0%,90%,100%{transform:translate(0)}91%{transform:translate(-3px,1px)}93%{transform:translate(3px,-1px)}95%{transform:translate(-2px,0)}}
+@keyframes glitch2{0%,88%,100%{transform:translate(0)}89%{transform:translate(3px,1px)}92%{transform:translate(-3px,-1px)}94%{transform:translate(2px,0)}}
+
+.tagline{margin:0;padding:14px 0 14px 18px;border-left:12px solid var(--yellow);font-size:clamp(18px,2vw,32px);font-weight:900;line-height:1.25}
+.intro{max-width:690px;margin:18px 0 0;font-size:clamp(14px,1.35vw,18px);font-weight:700}
+
+/* ─── TYPEWRITER for intro ───────────────────────────── */
+.typewriter{overflow:hidden;white-space:normal}
+
+/* ─── BUTTONS ────────────────────────────────────────── */
+.actions{display:flex;flex-wrap:wrap;gap:14px;margin-top:26px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:12px 18px;border:var(--border);background:var(--yellow);color:var(--black);box-shadow:var(--shadow);font-weight:900;text-transform:uppercase;position:relative;overflow:hidden;transition:transform .15s ease,box-shadow .15s ease,color .2s,background .2s}
+.btn::after{content:"";position:absolute;inset:0;background:var(--black);transform:scaleX(0);transform-origin:left;transition:transform .3s cubic-bezier(.4,0,.2,1);z-index:0}
+.btn span,.btn{z-index:1}
+.btn:hover{color:var(--yellow);box-shadow:3px 3px 0 var(--black)}
+.btn:hover::after{transform:scaleX(1)}
+.btn.alt{background:var(--cyan)}
+.btn.alt::after{background:var(--green)}
+.btn.alt:hover{color:var(--black);box-shadow:3px 3px 0 var(--black)}
+
+/* ─── HERO INFO CARDS ────────────────────────────────── */
+.hero-info{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.info-card{min-height:138px;padding:20px;border:var(--border);background:var(--white);box-shadow:var(--shadow);transition:transform .25s ease,box-shadow .25s ease}
+.info-card:hover{transform:translate(-4px,-4px);box-shadow:10px 10px 0 var(--black)}
+.info-card:nth-child(2){background:var(--cyan)}
+.info-card:nth-child(3){background:var(--pink)}
+.info-card strong{display:block;margin-bottom:10px;font-size:12px;text-transform:uppercase}
+.info-card span{display:block;font-weight:800;line-height:1.4}
+
+/* ─── ABOUT ──────────────────────────────────────────── */
+.statement{max-width:960px;margin:0;font-size:clamp(22px,3vw,42px);font-weight:900;line-height:1.2;text-transform:uppercase}
+.statement+p{max-width:980px;margin:24px 0 0;font-size:clamp(16px,1.6vw,20px);font-weight:700}
+
+/* ─── SKILLS ─────────────────────────────────────────── */
+.skills{display:grid;grid-template-columns:repeat(5,1fr);gap:18px}
+.skill{min-height:136px;display:flex;align-items:flex-end;padding:22px;border:var(--border);background:var(--white);color:var(--black);box-shadow:var(--shadow);font-weight:900;text-transform:uppercase;position:relative;overflow:hidden;transition:transform .25s ease,box-shadow .25s ease,color .2s}
+.skill::before{content:"";position:absolute;inset:0;background:var(--black);transform:scaleY(0);transform-origin:bottom;transition:transform .35s cubic-bezier(.4,0,.2,1)}
+.skill span{position:relative;z-index:1;transition:color .2s}
+.skill:hover{transform:translate(-3px,-3px);box-shadow:9px 9px 0 var(--black)}
+.skill:hover::before{transform:scaleY(1)}
+.skill:hover span{color:var(--yellow)}
+.skill:nth-child(2){background:var(--cyan)}
+.skill:nth-child(3){background:var(--pink)}
+.skill:nth-child(4){background:var(--green)}
+.skill:nth-child(5){background:var(--yellow)}
+
+/* ─── PROJECTS ───────────────────────────────────────── */
+.projects{display:grid;grid-template-columns:repeat(12,1fr);gap:26px}
+.project{grid-column:span 4;display:flex;flex-direction:column;gap:22px;padding:26px;border:var(--border);background:var(--white);color:var(--black);box-shadow:var(--shadow);transition:transform .3s ease,box-shadow .3s ease;position:relative;overflow:hidden}
+.project::after{content:"";position:absolute;bottom:0;left:0;width:100%;height:4px;background:linear-gradient(90deg,var(--yellow),var(--cyan),var(--pink));transform:scaleX(0);transform-origin:left;transition:transform .4s ease}
+.project:hover::after{transform:scaleX(1)}
+.project:hover{transform:translate(-4px,-4px);box-shadow:10px 10px 0 var(--black)}
+.project.feature{grid-column:1/-1;display:grid;grid-template-columns:.8fr 1fr;gap:30px;background:var(--cyan)}
+.project:nth-child(2){background:var(--pink)}
+.project:nth-child(3){background:var(--white)}
+.project h3{margin:0;font-size:clamp(19px,1.8vw,28px)}
+.project p{margin:0;font-weight:700}
+.project-block{display:grid;gap:8px}
+.project-label{display:inline-block;width:max-content;padding:5px 8px;border:2px solid var(--black);background:var(--yellow);font-size:12px;font-weight:900;text-transform:uppercase}
+.tag-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto}
+.tag{display:inline-flex;align-items:center;min-height:26px;padding:3px 8px;border:2px solid var(--black);background:var(--green);color:var(--black);font-size:12px;font-weight:900;text-transform:uppercase;transition:background .2s,color .2s,transform .15s}
+.tag:hover{background:var(--black);color:var(--yellow);transform:scale(1.05)}
+
+/* ─── EXPERIENCE ─────────────────────────────────────── */
+.experience,.focus{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.focus{grid-template-columns:repeat(4,1fr)}
+.exp,.focus-card{padding:24px;border:var(--border);background:var(--white);color:var(--black);box-shadow:var(--shadow);transition:transform .25s ease,box-shadow .25s ease}
+.exp:hover,.focus-card:hover{transform:translate(-3px,-3px);box-shadow:9px 9px 0 var(--black)}
+.exp:nth-child(2),.focus-card:nth-child(2){background:var(--cyan)}
+.focus-card:nth-child(3){background:var(--pink)}
+.focus-card:nth-child(4){background:var(--yellow)}
+.exp h3{margin:0 0 12px;font-size:clamp(18px,1.8vw,26px)}
+.exp p,.focus-card p{margin:0;font-weight:700}
+.focus-card h3{margin:0 0 10px;font-size:15px}
+
+/* ─── CONTACT ────────────────────────────────────────── */
+.contact{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center}
+.contact-title{margin:0;font-size:clamp(26px,4.2vw,64px)}
+.contact-copy{margin:18px 0 0;max-width:720px;font-size:18px;font-weight:700}
+.links{display:grid;gap:12px}
+.social{display:flex;justify-content:space-between;gap:16px;padding:16px;border:var(--border);background:var(--yellow);color:var(--black);box-shadow:var(--shadow);font-weight:900;text-transform:uppercase;transition:transform .2s ease,box-shadow .2s ease,background .2s,color .2s;position:relative;overflow:hidden}
+.social::before{content:"→";position:absolute;right:-24px;top:50%;transform:translateY(-50%);font-size:20px;transition:right .25s ease}
+.social:hover::before{right:16px}
+.social:nth-child(2){background:var(--cyan)}
+.social:nth-child(3){background:var(--pink)}
+.social:hover,.social:focus-visible{background:var(--black);color:var(--yellow);outline:none;transform:translate(-3px,-3px);box-shadow:9px 9px 0 var(--black)}
+.social:nth-child(2):hover,.social:nth-child(3):hover{color:var(--yellow)}
+
+/* ─── FOOTER ─────────────────────────────────────────── */
+footer{width:min(100%,calc(var(--max) + 56px));margin:0 auto;padding:0 28px 32px;color:var(--black);font-size:14px;font-weight:900}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px;border:3px solid var(--black);outline:4px solid var(--white);background:var(--yellow);box-shadow:6px 6px 0 var(--white)}
+.footer-links{display:flex;flex-wrap:wrap;gap:12px}
+.footer-links a{padding:6px 10px;border:2px solid var(--black);background:var(--white);text-transform:uppercase;transition:background .2s,color .2s,transform .15s}
+.footer-links a:hover,.footer-links a:focus-visible{background:var(--black);color:var(--yellow);outline:none;transform:translate(-2px,-2px)}
+
+/* ─── SCROLL REVEAL ──────────────────────────────────── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .6s cubic-bezier(.4,0,.2,1),transform .6s cubic-bezier(.4,0,.2,1)}
+.reveal.is-visible{opacity:1;transform:translateY(0)}
+.reveal-left{opacity:0;transform:translateX(-28px);transition:opacity .6s cubic-bezier(.4,0,.2,1),transform .6s cubic-bezier(.4,0,.2,1)}
+.reveal-left.is-visible{opacity:1;transform:translateX(0)}
+.reveal-right{opacity:0;transform:translateX(28px);transition:opacity .6s cubic-bezier(.4,0,.2,1),transform .6s cubic-bezier(.4,0,.2,1)}
+.reveal-right.is-visible{opacity:1;transform:translateX(0)}
+
+/* stagger children */
+.stagger > *{opacity:0;transform:translateY(22px);transition:opacity .5s ease,transform .5s ease}
+.stagger.is-visible > *:nth-child(1){opacity:1;transform:none;transition-delay:.05s}
+.stagger.is-visible > *:nth-child(2){opacity:1;transform:none;transition-delay:.15s}
+.stagger.is-visible > *:nth-child(3){opacity:1;transform:none;transition-delay:.25s}
+.stagger.is-visible > *:nth-child(4){opacity:1;transform:none;transition-delay:.35s}
+.stagger.is-visible > *:nth-child(5){opacity:1;transform:none;transition-delay:.45s}
+
+/* ─── HERO ANIMATIONS ────────────────────────────────── */
+.hero-stage,.hero-info,.topbar{animation:loadIn .7s ease both}
+.hero-media{animation:portraitIn .75s ease .1s both}
+.hero-copy{animation:copyIn .75s ease .18s both}
+@keyframes loadIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes portraitIn{from{opacity:0;transform:translateY(28px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes copyIn{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:translateX(0)}}
+@keyframes floaty{0%,100%{transform:rotate(45deg) translate(0,0)}50%{transform:rotate(45deg) translate(0,-8px)}}
+
+/* ─── CURSOR ─────────────────────────────────────────── */
+.cursor-dot,.cursor-ring{position:fixed;left:0;top:0;z-index:9999;pointer-events:none;translate:-50% -50%;will-change:transform}
+.cursor-dot{width:10px;height:10px;background:var(--yellow);border:2px solid var(--black);transition:width .15s,height .15s,background .15s}
+.cursor-ring{width:34px;height:34px;border:3px solid var(--cyan);box-shadow:4px 4px 0 var(--pink);transition:width .2s,height .2s,border-color .2s}
+body.hovering .cursor-dot{width:16px;height:16px;background:var(--cyan)}
+body.hovering .cursor-ring{width:50px;height:50px;border-color:var(--yellow)}
+
+/* ─── SPARKS ─────────────────────────────────────────── */
+.spark{position:fixed;z-index:9998;width:10px;height:10px;border:2px solid var(--black);pointer-events:none;animation:spark .55s ease-out forwards}
+@keyframes spark{to{opacity:0;transform:translate(var(--x),var(--y)) rotate(35deg) scale(.3)}}
+
+/* ─── ACTIVE SECTION INDICATOR ───────────────────────── */
+.nav a.active{background:var(--yellow);color:var(--black)}
+.nav a.active::before{transform:scaleX(1)}
+
+/* ─── COUNT-UP NUMBERS ───────────────────────────────── */
+.count-num{display:inline-block;font-size:clamp(28px,4vw,52px);font-weight:900;color:var(--yellow)}
+
+/* ─── MARQUEE strip ──────────────────────────────────── */
+.marquee-wrap{overflow:hidden;border-top:3px solid var(--black);border-bottom:3px solid var(--black);background:var(--yellow);color:var(--black);padding:10px 0;margin:0 0 38px}
+.marquee-inner{display:flex;gap:32px;width:max-content;animation:marquee 18s linear infinite}
+.marquee-wrap:hover .marquee-inner{animation-play-state:paused}
+.marquee-item{font-family:"Press Start 2P",monospace;font-size:12px;white-space:nowrap;text-transform:uppercase;display:flex;align-items:center;gap:18px}
+.marquee-item::after{content:"★";color:var(--black)}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ─── RESPONSIVE ─────────────────────────────────────── */
+@media(max-width:1120px){
+  .hero-stage{grid-template-columns:1fr;gap:30px}
+  .hero-media{grid-column:1;grid-row:1;width:min(78vw,410px);justify-self:center}
+  .hero-copy{grid-column:1;grid-row:2;justify-self:stretch}
+  .hero-stage::before{right:22px;top:22px}
+  .hero-stage::after{left:22px;right:auto;bottom:22px}
+  .hero-info{grid-template-columns:1fr 1fr}
+  .project.feature,.contact{grid-template-columns:1fr}
+  .project{grid-column:1/-1}
+  .skills,.focus{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:760px){
+  body{cursor:auto}
+  main{padding:16px}
+  .topbar{align-items:center;min-height:auto;flex-wrap:wrap}
+  .brand{flex:1 1 100%;border-right:0;border-bottom:3px solid var(--white)}
+  .nav{width:100%;overflow-x:auto}
+  .nav a{min-width:max-content;min-height:48px}
+  .section{margin-bottom:28px;box-shadow:5px 5px 0 var(--yellow)}
+  .purple{box-shadow:5px 5px 0 var(--purple)}
+  .blue{box-shadow:5px 5px 0 var(--blue)}
+  .red{box-shadow:5px 5px 0 var(--red)}
+  .black{box-shadow:5px 5px 0 var(--cyan)}
+  .hero,.body{padding:18px}
+  .hero-stage{padding:18px}
+  .hero-media{width:min(82vw,360px);min-width:0}
+  .hero-stage::before,.hero-stage::after{display:none}
+  .hero-info,.skills,.projects,.experience,.focus,.contact{grid-template-columns:1fr}
+  .actions{flex-direction:column}
+  .btn,.social{width:100%}
+  .portrait figcaption{position:static;max-width:none;border-left:0;border-right:0;border-bottom:0}
+  .cursor-dot,.cursor-ring{display:none}
+  footer{padding:0 16px 22px}
+  .footer-inner{display:grid}
+  .marquee-wrap{margin:0 0 28px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .reveal,.reveal-left,.reveal-right{opacity:1;transform:none}
+  .stagger > *{opacity:1;transform:none}
+  .cursor-dot,.cursor-ring{display:none}
+  h1::before,h1::after{display:none}
+}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div class="scanlines" aria-hidden="true"></div>
+<div class="cursor-dot" aria-hidden="true"></div>
+<div class="cursor-ring" aria-hidden="true"></div>
+
+<div class="shell">
+<div class="deco" aria-hidden="true"><span>+</span><span>*</span><span>+</span><span>*</span></div>
+
+<header class="topbar">
+  <a class="brand" href="#top" aria-label="Dinol Castelino portfolio home"><span class="mark">DC</span><span class="pixel">Dinol Castelino</span></a>
+  <nav class="nav" aria-label="Portfolio navigation">
+    <a href="#about" data-section="about">About</a>
+    <a href="#skills" data-section="skills">Tech Stack</a>
+    <a href="#projects" data-section="projects">Projects</a>
+    <a href="#experience" data-section="experience">Experience</a>
+    <a href="#focus" data-section="focus">Focus</a>
+    <a href="#contact" data-section="contact">Contact</a>
+  </nav>
+</header>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap" aria-hidden="true">
+  <div class="marquee-inner">
+    <span class="marquee-item">AI/ML Engineer</span>
+    <span class="marquee-item">LLM Systems</span>
+    <span class="marquee-item">RAG Architecture</span>
+    <span class="marquee-item">Computer Vision</span>
+    <span class="marquee-item">AI Agents</span>
+    <span class="marquee-item">FastAPI</span>
+    <span class="marquee-item">PyTorch</span>
+    <span class="marquee-item">Real-World AI</span>
+    <span class="marquee-item">AI/ML Engineer</span>
+    <span class="marquee-item">LLM Systems</span>
+    <span class="marquee-item">RAG Architecture</span>
+    <span class="marquee-item">Computer Vision</span>
+    <span class="marquee-item">AI Agents</span>
+    <span class="marquee-item">FastAPI</span>
+    <span class="marquee-item">PyTorch</span>
+    <span class="marquee-item">Real-World AI</span>
+  </div>
+</div>
+
+<main id="top">
+
+<!-- HERO -->
+<section class="section hero-section" aria-labelledby="hero-title">
+  <div class="hero">
+    <div class="hero-stage">
+      <div class="hero-copy">
+        <p class="eyebrow">AI/ML Engineer | AI Product-Developer</p>
+        <h1 id="hero-title" class="pixel" data-text="Dinol Castelino">Dinol Castelino</h1>
+        <p class="tagline">Building real-world AI systems that actually work</p>
+        <p class="intro">I build real AI systems with engineering discipline and product thinking — from data pipelines and model logic to APIs, validation, and usable outputs. I focus on making AI systems reliable, not just functional.</p>
+        <div class="actions" aria-label="Primary portfolio actions">
+          <a class="btn" href="#projects">View projects</a>
+          <a class="btn alt" href="#contact">Get in touch</a>
+        </div>
+      </div>
+      <div class="hero-media" aria-label="Profile image">
+        <figure class="portrait">
+          <img src="assets/dinol.jpeg" alt="Portrait of Dinol Castelino" />
+          <figcaption>Dinol Castelino</figcaption>
+          <span class="frame" aria-hidden="true"></span>
+        </figure>
+      </div>
+    </div>
+    <div class="hero-info stagger" aria-label="Profile summary">
+      <div class="info-card"><strong>Role</strong><span>AI/ML Engineer | AI Product-Developer</span></div>
+      <div class="info-card"><strong>Education</strong><span>B.E. in Artificial Intelligence &amp; Machine Learning<br />St Joseph Engineering College</span></div>
+      <div class="info-card"><strong>Experience &amp; Leadership</strong><span>Vice President — Nucleus<br />ML Member — Microminers</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section purple reveal" id="about" aria-labelledby="about-title">
+  <div class="head"><span class="num">01</span><h2 class="title pixel" id="about-title">About</h2></div>
+  <div class="body">
+    <p class="statement">I care about the full AI product, not just the model.</p>
+    <p>My work focuses on turning AI ideas into reliable systems: clear inputs, thoughtful model choices, dependable backend behavior, validation, and outputs people can actually use.</p>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section class="section blue reveal" id="skills" aria-labelledby="skills-title">
+  <div class="head"><span class="num">02</span><h2 class="title pixel" id="skills-title">Tech Stack</h2></div>
+  <div class="body">
+    <div class="skills stagger" aria-label="Technology stack">
+      <div class="skill"><span>Machine Learning</span></div>
+      <div class="skill"><span>PyTorch</span></div>
+      <div class="skill"><span>LLMs &amp; Agents</span></div>
+      <div class="skill"><span>Backend (FastAPI)</span></div>
+      <div class="skill"><span>Data Systems (PostgreSQL)</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="section red reveal" id="projects" aria-labelledby="projects-title">
+  <div class="head"><span class="num">03</span><h2 class="title pixel" id="projects-title">Projects</h2></div>
+  <div class="body">
+    <div class="projects">
+      <article class="project feature reveal-left">
+        <div>
+          <h3 class="pixel">AstroScan — Asteroid Detection System</h3>
+          <div class="tag-row"><span class="tag">Computer Vision</span><span class="tag">CNN</span><span class="tag">PINNs</span><span class="tag">Scientific AI</span></div>
+        </div>
+        <div>
+          <div class="project-block"><span class="project-label">Overview</span><p>Detects and tracks asteroids using astronomical image sequences.</p></div>
+          <div class="project-block"><span class="project-label">What I built</span><p>A workflow combining image processing, CNN-based feature extraction, and physics-informed neural networks to estimate trajectories and motion metrics.</p></div>
+          <div class="project-block"><span class="project-label">Why it matters</span><p>Shows how AI and physics can work together on real scientific detection problems, especially when observational data is limited.</p></div>
+        </div>
+      </article>
+      <article class="project reveal">
+        <h3 class="pixel">Gunshot Detection System</h3>
+        <div class="project-block"><span class="project-label">Overview</span><p>Classifies audio to identify gunshot-like events in noisy environments.</p></div>
+        <div class="project-block"><span class="project-label">What I built</span><p>A real-time detection approach using YAMNet embeddings with a task-specific classifier focused on robustness.</p></div>
+        <div class="project-block"><span class="project-label">Why it matters</span><p>Useful safety systems need fast, reliable detection under imperfect real-world conditions, not only clean lab audio.</p></div>
+        <div class="tag-row"><span class="tag">Audio ML</span><span class="tag">YAMNet</span><span class="tag">Realtime</span></div>
+      </article>
+      <article class="project reveal">
+        <h3 class="pixel">DFRAG Legal RAG</h3>
+        <div class="project-block"><span class="project-label">Overview</span><p>A secure document question-answering system for legal-style documents.</p></div>
+        <div class="project-block"><span class="project-label">What I built</span><p>A hybrid retrieval setup using BM25 and vector search, with validation layers to reduce unsupported answers.</p></div>
+        <div class="project-block"><span class="project-label">Why it matters</span><p>In legal workflows, trust depends on grounded answers, careful retrieval, and clear controls against hallucination.</p></div>
+        <div class="tag-row"><span class="tag">RAG</span><span class="tag">BM25</span><span class="tag">Vector Search</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section class="section reveal" id="experience" aria-labelledby="experience-title">
+  <div class="head"><span class="num">04</span><h2 class="title pixel" id="experience-title">Experience</h2></div>
+  <div class="body">
+    <div class="experience stagger">
+      <article class="exp"><h3 class="pixel">Vice President — Nucleus</h3><p>Led club initiatives, coordinated members, and helped move technical ideas into organized execution. This strengthened how I communicate, plan, and take ownership.</p></article>
+      <article class="exp"><h3 class="pixel">ML Member — Microminers</h3><p>Contributed to machine learning work through experimentation, evaluation, and collaboration with a practical systems mindset.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- FOCUS -->
+<section class="section black reveal" id="focus" aria-labelledby="focus-title">
+  <div class="head"><span class="num">05</span><h2 class="title pixel" id="focus-title">Current Focus</h2></div>
+  <div class="body">
+    <div class="focus stagger" aria-label="Current AI focus areas">
+      <article class="focus-card"><h3 class="pixel">AI Agents</h3><p>Building useful autonomous workflows.</p></article>
+      <article class="focus-card"><h3 class="pixel">LLM Systems</h3><p>Making language models more reliable in products.</p></article>
+      <article class="focus-card"><h3 class="pixel">RAG</h3><p>Improving retrieval, grounding, and validation.</p></article>
+      <article class="focus-card"><h3 class="pixel">Local AI</h3><p>Exploring private and efficient local systems.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="section purple reveal" id="contact" aria-labelledby="contact-title">
+  <div class="head"><span class="num">06</span><h2 class="title pixel" id="contact-title">Contact</h2></div>
+  <div class="body contact">
+    <div>
+      <p class="contact-title pixel">Let's build something meaningful.</p>
+      <p class="contact-copy">I am interested in AI/ML roles where engineering quality, product thinking, and reliable systems matter.</p>
+    </div>
+    <div class="links" aria-label="Contact links">
+      <a class="social" href="https://www.linkedin.com/in/dinol-castelino-57053631a" target="_blank" rel="noreferrer"><span>LinkedIn</span><span>Open ↗</span></a>
+      <a class="social" href="https://github.com/Dinol-ino" target="_blank" rel="noreferrer"><span>GitHub</span><span>Open ↗</span></a>
+      <a class="social" href="mailto:" aria-label="Email Dinol Castelino"><span>Email</span><span>Mail ↗</span></a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="reveal">
+  <div class="footer-inner">
+    <span class="pixel">Let's build something meaningful.</span>
+    <div class="footer-links">
+      <a href="https://www.linkedin.com/in/dinol-castelino-57053631a" target="_blank" rel="noreferrer">LinkedIn</a>
+      <a href="https://github.com/Dinol-ino" target="_blank" rel="noreferrer">GitHub</a>
+      <a href="mailto:">Email</a>
+    </div>
+  </div>
+</footer>
+</div>
+
+<script>
+/* ── PROGRESS BAR ───────────────────────────────────── */
+const bar = document.getElementById('progress');
+function updateProgress(){
+  const h = document.documentElement;
+  const pct = (window.scrollY/(h.scrollHeight-h.clientHeight))*100;
+  bar.style.width = Math.min(pct,100)+'%';
+}
+window.addEventListener('scroll', updateProgress, {passive:true});
+
+/* ── TOPBAR HIDE ON SCROLL DOWN ─────────────────────── */
+let lastY = 0, ticking = false;
+const topbar = document.querySelector('.topbar');
+window.addEventListener('scroll', ()=>{
+  if(!ticking){
+    requestAnimationFrame(()=>{
+      if(window.scrollY > lastY && window.scrollY > 140){
+        topbar.classList.add('hidden');
+      } else {
+        topbar.classList.remove('hidden');
+      }
+      lastY = window.scrollY;
+      ticking = false;
+    });
+    ticking = true;
+  }
+},{passive:true});
+
+/* ── INTERSECTION OBSERVER (reveal + stagger) ────────── */
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('is-visible');
+      io.unobserve(e.target);
+    }
+  });
+},{threshold:.1,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.stagger').forEach(el=>io.observe(el));
+
+/* ── ACTIVE NAV ─────────────────────────────────────── */
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav a[data-section]');
+const navObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      navLinks.forEach(a=>a.classList.toggle('active', a.dataset.section===e.target.id));
+    }
+  });
+},{threshold:.4});
+sections.forEach(s=>navObserver.observe(s));
+
+/* ── CURSOR ─────────────────────────────────────────── */
+const dot = document.querySelector('.cursor-dot');
+const ring = document.querySelector('.cursor-ring');
+let mx=innerWidth/2,my=innerHeight/2,rx=mx,ry=my,dx=mx,dy=my;
+function moveCursor(){
+  rx+=(mx-rx)*.16; ry+=(my-ry)*.16;
+  dx+=(mx-dx)*.42; dy+=(my-dy)*.42;
+  if(ring&&dot){
+    ring.style.transform=`translate3d(${rx}px,${ry}px,0)`;
+    dot.style.transform=`translate3d(${dx}px,${dy}px,0)`;
+  }
+  requestAnimationFrame(moveCursor);
+}
+moveCursor();
+window.addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY},{passive:true});
+document.querySelectorAll('a,button,.skill,.project,.exp,.focus-card,.info-card,.social,.tag').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hovering'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hovering'));
+});
+
+/* ── SPARKS ─────────────────────────────────────────── */
+const sparkColors=['#ffd600','#00e676','#82f7ff','#ff8ac8','#ff3131','#246bff'];
+function spark(x,y){
+  for(let i=0;i<6;i++){
+    const s=document.createElement('span');
+    s.className='spark';
+    s.style.cssText=`left:${x}px;top:${y}px;background:${sparkColors[i%6]}`;
+    const angle=(Math.PI*2/6)*i, dist=24+Math.random()*28;
+    s.style.setProperty('--x',Math.cos(angle)*dist+'px');
+    s.style.setProperty('--y',Math.sin(angle)*dist+'px');
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),620);
+  }
+}
+window.addEventListener('pointerdown',e=>{mx=e.clientX;my=e.clientY;spark(e.clientX,e.clientY);},{passive:true});
+let lastSS=0;
+window.addEventListener('scroll',()=>{
+  const now=performance.now();
+  if(now-lastSS>200){lastSS=now;spark(Math.min(innerWidth-30,Math.max(30,mx)),Math.min(innerHeight-30,Math.max(30,my)));}
+},{passive:true});
+
+/* ── GLITCH on hover ─────────────────────────────────── */
+const h1 = document.getElementById('hero-title');
+if(h1){
+  h1.addEventListener('mouseenter',()=>{
+    h1.style.animation='none';
+    h1.style.animation='';
+  });
+}
+
+/* ── MARQUEE pause on tab blur ───────────────────────── */
+document.addEventListener('visibilitychange',()=>{
+  document.querySelector('.marquee-inner').style.animationPlayState=
+    document.hidden?'paused':'running';
+});
+</script>
+</body>
+</html>
